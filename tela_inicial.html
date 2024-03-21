@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family:system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+        }
+
+        body{
+            height: 100vh;
+            background-image: url('./Assets/background.jpeg');
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        main{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            width: 50%;
+            backdrop-filter: blur(10px);
+            height: 50%;
+            border-radius: 5px;
+            box-shadow: 3px 5px 15px ;
+        }
+        .nomeJogadores{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            gap: 0.6rem;
+        }
+
+        .nomeJogadores input{
+            border: none;
+            background-color: transparent;
+            box-shadow: 1px 5px 15px;
+            padding: 0.3rem;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        button{
+            padding: 0.4rem;
+            background-color: transparent;
+            border: none;
+            box-shadow: 5px 6px 9px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h2>Code Match</h2>
+
+        <div class="nomeJogadores">
+            <label for="">Jogador 1:</label>
+            <input type="text" id="player1" placeholder="Primeiro jogador">
+            <label for="">Jogador 2:</label>
+            <input type="text" id="player2"
+            placeholder="Segundo jogador">
+
+            <button onclick="pegarDados()">Começar o jogo</button>
+        </div>
+    </main>
+
+
+
+    <script>
+        function pegarDados(){
+            //pegamos os valores através do id
+            let jogador1 = document.getElementById('player1').value
+            let jogador2 = document.getElementById('player2').value
+            //jogando os valores no LocalStorage:
+            localStorage.setItem('jogador1',jogador1)
+            localStorage.setItem('jogador2',jogador2)
+
+
+            //segunda parte da tela inicial
+            window.location.href = 'http://127.0.0.1:5500/Workshops/Javascript%20Magic/tela_Jogo.html'
+
+        }
+    </script>
+</body>
+</html>

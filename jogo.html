@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Document</title>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Estilo do corpo da página */
+body {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Estilo do cabeçalho */
+header {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    top: 0;
+    padding: 1rem;
+    background-color: aliceblue;
+}
+
+/* Estilo do container de cartões */
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 4rem;
+}
+
+/* Estilo de cada cartão */
+.card {
+    width: 150px;
+    height: 150px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.8s;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+/* Estilo de cada grupo de cartões */
+.group {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+/* Estilo das faces frontal e traseira de cada cartão */
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    gap: 1rem;
+    display: flex;
+    backface-visibility: hidden;
+}
+
+/* Estilo dos grupos de cartões */
+.group{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+}
+
+/* Estilo da face traseira do cartão */
+.back {
+    transform: rotateY(180deg);
+    
+}
+
+/* Estilo para quando o cartão estiver virado */
+.card.flip {
+    transform: rotateY(180deg);
+}
+
+/* Estilo das imagens na face frontal e traseira dos cartões */
+.back img, .front img {
+    position: absolute;
+    width: 150px;
+    backface-visibility: hidden;
+}
+
+/* Estilo principal */
+main {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Estilo para indicar a vez do jogador */
+.vez{
+    background-color: rgb(114, 239, 243);
+    color: white;
+    padding: 0.6rem;
+    border-radius: 5px;
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="player1">
+        <span> Jogador1:
+            <span id="nome_jogador1"></span>
+        </span>
+    </div>
+   <div class="player2">
+    <span>Jogador2: 
+        <span id="nome_jogador2"></span>
+    </span>
+   </div>
+</header>
+<main class="container">
+</main>
+<script>
+    // Variáveis globais
+    let jogador1 = true; // Começa com o primeiro jogador
+    let primeiraCarta = null; // Guarda a primeira carta que o usuário clicou na sua vez
+    let ultimaCarta; // Vou precisar armazenar a última carta
+    let contadorCliques = 0; // Para sabermos quando a carta foi clicada
+
+    // Função para escrever os nomes dos jogadores
+    function escreverDados() {
+        let primeiro_jogador = localStorage.getItem('jogador1');
+        let segundo_jogador = localStorage.getItem('jogador2');
+
+        document.getElementById('nome_jogador1').innerHTML = primeiro_jogador;
+        document.getElementById('nome_jogador2').innerHTML = segundo_jogador;
+    }
+
+    // Função para embaralhar os cartões
+    function shuffle(lista) {
+        return lista.sort(() => Math.random() - 0.5);
+    }
+
+    // Função para mostrar os cartões na tela
+    function mostarCards() {
+        // Lista de cartões com suas imagens frontal e traseira
+        const cards = [
+            { front: "./Assets/back.png", back: "./Assets/card1.png" },
+            { front: " ./Assets/back.png", back: "./Assets/card2.png" },
+            { front: " ./Assets/back.png", back: "./Assets/card4.png" },
+            { front: " ./Assets/back.png", back: "./Assets/card5.png" },
+            { front: "./Assets/back.png", back: "./Assets/card6.png" },
+            { front: "./Assets/back.png", back: "./Assets/card7.png" },
+            { front: "./Assets/back.png", back: "./Assets/card8.png" },
+            { front: "./Assets/back.png", back: "./Assets/card9.png" },
+            { front: " ./Assets/back.png", back: "./Assets/card10.png" }
+        ];
+
+        // Embaralha os cartões duas vezes
+        let cards_embaralhados1 = shuffle(cards);
+        let cards_embaralhados2 = shuffle(cards);
+        let cards_geral = cards_embaralhados1.concat(cards_embaralhados2);
+        let container = document.querySelector('.container');
+
+        // Loop para criar os elementos de cartão e suas imagens
+        for (let i = 0; i < cards_geral.length; i++) {
+            // Cria um novo grupo após cada conjunto de 6 cartões
+            if (i % 6 == 0) {
+                let groupDiv = document.createElement('div');
+                groupDiv.classList.add('group');
+                container.appendChild(groupDiv);
+            }
+
+            // Cria os elementos de cartão, frente e verso
+            let div_card = document.createElement('div');
+            let div_back = document.createElement('div');
+            let div_front = document.createElement('div');
+            let imageBack = document.createElement('img');
+            let imageFront = document.createElement('img');
+            
+            // Adiciona classes e IDs aos elementos
+            div_card.classList.add('card');
+            div_back.classList.add('back');
+            div_front.classList.add('front');
+            div_card.setAttribute('id', `card_${i}`);
+            div_back.setAttribute('id', `back_${i}`);
+            div_front.setAttribute('id', `front_${i}`);
+
+            // Define as imagens dos cartões
+            imageBack.src = cards_geral[i].back;
+            imageFront.src = cards_geral[i].front;
+           
+            // Adiciona as imagens aos elementos de frente e verso
+            div_back.appendChild(imageBack);
+            div_front.appendChild(imageFront);
+            // Adiciona as imagens aos elementos de frente e verso
+            div_back.appendChild(imageBack);
+            div_front.appendChild(imageFront);
+
+            // Adiciona as faces do cartão ao cartão
+            div_card.appendChild(div_back);
+            div_card.appendChild(div_front);
+
+            // Adiciona o cartão ao último grupo de cartões criado
+            container.lastChild.appendChild(div_card);
+
+            // Adiciona um ouvinte de eventos para virar o cartão ao clicar
+            div_card.addEventListener('click', function() {
+                div_card.classList.toggle('flip');
+            });
+        }
+    }
+
+
+   function seila() {
+    const container = document.querySelector('.container');
+    const cards = container.querySelectorAll('.card');
+    let firstCard, secondCard;
+    let playerScore = { player1: 0, player2: 0 };
+    let currentPlayer = 'player1';
+
+    cards.forEach((card) => {
+      card.addEventListener('click', () => {
+        if (!card.classList.contains('matched')) {
+          card.classList.add('flip');
+
+          if (!firstCard) {
+            firstCard = card;
+            return;
+          }
+
+          secondCard = card;
+
+          if (firstCard.querySelector('img').src === secondCard.querySelector('img').src) {
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            playerScore[currentPlayer] += 1;
+            firstCard = null;
+            secondCard = null;
+
+            if (Array.from(container.querySelectorAll('.matched')).length === cards.length) {
+              alert(`Player ${currentPlayer} wins with a score of ${playerScore[currentPlayer]}`);
+}
+
+            currentPlayer = (currentPlayer === 'player1') ? 'player2' : 'player1';
+            play();
+          } else {
+            setTimeout(() => {
+              firstCard.classList.remove('flip');
+              secondCard.classList.remove('flip');
+              firstCard = null;
+              secondCard = null;
+              play();
+            }, 1000);
+          }
+        }
+      });
+    });
+  }
+
+
+
+   escreverDados();
+   mostarCards();
+   seila();
+</script>
+</body>
+</html>
