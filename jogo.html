@@ -75,8 +75,7 @@ header {
 
 /* Estilo da face traseira do cartão */
 .back {
-    transform: rotateY(180deg);
-    
+    transform: rotateY(180deg); 
 }
 
 /* Estilo para quando o cartão estiver virado */
@@ -99,14 +98,6 @@ main {
     flex-direction: column;
     align-items: center;
 }
-
-/* Estilo para indicar a vez do jogador */
-.vez{
-    background-color: rgb(114, 239, 243);
-    color: white;
-    padding: 0.6rem;
-    border-radius: 5px;
-}
 </style>
 </head>
 <body>
@@ -123,8 +114,7 @@ main {
     </span>
    </div>
 </header>
-<main class="container">
-</main>
+<main class="container"></main>
 <script>
     // Variáveis globais
     let jogador1 = true; // Começa com o primeiro jogador
@@ -134,9 +124,10 @@ main {
 
     // Função para escrever os nomes dos jogadores
     function escreverDados() {
+        //pegando os nomes dos jogadores
         let primeiro_jogador = localStorage.getItem('jogador1');
         let segundo_jogador = localStorage.getItem('jogador2');
-
+        //escrevendo os nomes na tela
         document.getElementById('nome_jogador1').innerHTML = primeiro_jogador;
         document.getElementById('nome_jogador2').innerHTML = segundo_jogador;
     }
@@ -145,6 +136,11 @@ main {
     function shuffle(lista) {
         return lista.sort(() => Math.random() - 0.5);
     }
+/*esse código classifica o array lista de forma aleatória. Cada vez que
+ você executar esse código, os elementos do array serão reordenados
+  aleatoriamente com base nos valores retornados pela função Math.random() - 0.5.*/
+
+
 
     // Função para mostrar os cartões na tela
     function mostarCards() {
@@ -164,15 +160,20 @@ main {
         // Embaralha os cartões duas vezes
         let cards_embaralhados1 = shuffle(cards);
         let cards_embaralhados2 = shuffle(cards);
+        //junta as duas listas de cartões em uma só
         let cards_geral = cards_embaralhados1.concat(cards_embaralhados2);
+        //seleciona o elemento onde vai ficar as cartas
         let container = document.querySelector('.container');
 
         // Loop para criar os elementos de cartão e suas imagens
         for (let i = 0; i < cards_geral.length; i++) {
             // Cria um novo grupo após cada conjunto de 6 cartões
             if (i % 6 == 0) {
+                //criamos uma div
                 let groupDiv = document.createElement('div');
+                //adicionamos a ela a classe group
                 groupDiv.classList.add('group');
+                //jogamos essa nova div dentro do container
                 container.appendChild(groupDiv);
             }
 
@@ -183,25 +184,21 @@ main {
             let imageBack = document.createElement('img');
             let imageFront = document.createElement('img');
             
-            // Adiciona classes e IDs aos elementos
+            // Adiciona classes aos elementos
             div_card.classList.add('card');
             div_back.classList.add('back');
             div_front.classList.add('front');
-            div_card.setAttribute('id', `card_${i}`);
-            div_back.setAttribute('id', `back_${i}`);
-            div_front.setAttribute('id', `front_${i}`);
+           
 
             // Define as imagens dos cartões
             imageBack.src = cards_geral[i].back;
             imageFront.src = cards_geral[i].front;
+            //isso esta dentro do loop, logo, a cada iteração
+            //do loop, i será um valor diferente
            
             // Adiciona as imagens aos elementos de frente e verso
             div_back.appendChild(imageBack);
             div_front.appendChild(imageFront);
-            // Adiciona as imagens aos elementos de frente e verso
-            div_back.appendChild(imageBack);
-            div_front.appendChild(imageFront);
-
             // Adiciona as faces do cartão ao cartão
             div_card.appendChild(div_back);
             div_card.appendChild(div_front);
@@ -217,57 +214,87 @@ main {
     }
 
 
-   function seila() {
+    function logica() {
+    // Seleciona o container que contém os cartões
     const container = document.querySelector('.container');
+    // Seleciona todos os cartões dentro do container
     const cards = container.querySelectorAll('.card');
+    // Declara as variáveis para armazenar as cartas selecionadas
     let firstCard, secondCard;
+
+    // Objeto para armazenar os pontos de cada jogador
     let playerScore = { player1: 0, player2: 0 };
+
+    // Variável para rastrear o jogador atual
     let currentPlayer = 'player1';
 
+    // Itera sobre cada carta no conjunto de cartões
     cards.forEach((card) => {
-      card.addEventListener('click', () => {
-        if (!card.classList.contains('matched')) {
-          card.classList.add('flip');
 
-          if (!firstCard) {
-            firstCard = card;
-            return;
-          }
+        // Adiciona um ouvinte de eventos para o clique em cada carta
+        card.addEventListener('click', () => {
 
-          secondCard = card;
+            // Verifica se a carta clicada ainda não foi emparelhada
+            if (!card.classList.contains('matched')) {
 
-          if (firstCard.querySelector('img').src === secondCard.querySelector('img').src) {
-            firstCard.classList.add('matched');
-            secondCard.classList.add('matched');
-            playerScore[currentPlayer] += 1;
-            firstCard = null;
-            secondCard = null;
+                // Vira a carta clicada
+                card.classList.add('flip');
 
-            if (Array.from(container.querySelectorAll('.matched')).length === cards.length) {
-              alert(`Player ${currentPlayer} wins with a score of ${playerScore[currentPlayer]}`);
+                // Se firstCard ainda não foi selecionado, define-o como a carta clicada e retorna
+                if (!firstCard) {
+                    firstCard = card;
+                    return;
+                }
+
+                // Define secondCard como a carta clicada
+                secondCard = card;
+
+    // Verifica se as imagens das cartas firstCard e secondCard são iguais
+    if (firstCard.querySelector('img').src === secondCard.querySelector('img').src) {
+
+    // Se as imagens forem iguais, adiciona a classe matched para indicar que estão emparelhadas
+     firstCard.classList.add('matched');
+    secondCard.classList.add('matched');
+
+    // Incrementa o contador de pontos do jogador atual
+        playerScore[currentPlayer] += 1;
+
+  // Limpa firstCard e secondCard para permitir a seleção de novas cartas
+     firstCard = null;
+    secondCard = null;
+
+                    // Verifica se todas as cartas foram emparelhadas
+                    if (Array.from(container.querySelectorAll('.matched')).length === cards.length) {
+
+                        // Se sim, exibe um alerta com o jogador vencedor e sua pontuação
+                        alert(`Player ${currentPlayer} wins with a score of ${playerScore[currentPlayer]}`);
+                    }
+
+                    // Alterna para o próximo jogador
+                    currentPlayer = (currentPlayer === 'player1') ? 'player2' : 'player1';
+
+
+ } else {
+     // Se as imagens não forem iguais, após um intervalo de 1 segundo,
+     // vira as cartas de volta 
+    setTimeout(() => {
+     firstCard.classList.remove('flip');
+    secondCard.classList.remove('flip');
+    firstCard = null;
+    secondCard = null;
+    }, 1000);
+                }
+            }
+        });
+    });
 }
 
-            currentPlayer = (currentPlayer === 'player1') ? 'player2' : 'player1';
-            play();
-          } else {
-            setTimeout(() => {
-              firstCard.classList.remove('flip');
-              secondCard.classList.remove('flip');
-              firstCard = null;
-              secondCard = null;
-              play();
-            }, 1000);
-          }
-        }
-      });
-    });
-  }
 
 
-
+//chamando as funções
    escreverDados();
    mostarCards();
-   seila();
+   logica();
 </script>
 </body>
 </html>
